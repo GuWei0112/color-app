@@ -27,11 +27,6 @@ const App = () => {
           )}
         />
       </Switch>
-      {/*
-      <div>
-        <Paltette Paltette={generatePalette(seedColor[4])} />        
-      </div>
-    */}
     </div>
   );
 };
