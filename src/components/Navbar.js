@@ -18,7 +18,7 @@ export default ({ level, changeLevel, handleChange }) => {
   return (
     <header className="Navbar">
       <div className="logo">
-        <Link to="/">Reactcolorpicker</Link>
+        <Link to="/">ReactColorPicker</Link>
       </div>
       <div className="slider-container">
         <span>Level: {level}</span>
