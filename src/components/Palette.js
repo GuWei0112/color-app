@@ -2,29 +2,25 @@ import React, { useState } from "react";
 import ColorBox from "./ColorBox";
 import "rc-slider/assets/index.css";
 import "../css/Palette.css";
-import Slider from "rc-slider";
-
+import Navbar from './Navbar'
 export default ({ Paltette }) => {
   const [level, setLevel] = useState(500);
+  const [format,setFormat] = useState('hex')
   const colorBoxes = Paltette.colors[level].map(color => {
     return (
-      <ColorBox background={color.hex} key={color.name} name={color.name} />
+      <ColorBox background={color[format]} key={color.name} name={color.name} />
     );
   });
   const changeLevel = newLevel => {
     setLevel(newLevel);
   };
+  const changeFormat=(e)=>{
+    setFormat(e.target.value)
+  }
   return (
     <div className="Palette">
-      <div className = 'Slider'>
-        <Slider
-          defaultValue={level}
-          min={100}
-          max={900}
-          onAfterChange={newLevel => changeLevel(newLevel)}
-          step={100}
-        />
-      </div>
+      <Navbar level={level} 
+      changeLevel={changeLevel} handleChange={changeFormat}/>
       {/* NavBar */}
       <div className="Palette-colors">
         {/* ColorBox */}
