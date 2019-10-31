@@ -28,7 +28,6 @@ const App = () => {
         />
         <Route component={() => (<div>404 Not found </div>)} />
       </Switch>
-      <h1>2</h1>
     </div>
   );
 };
