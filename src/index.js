@@ -26,6 +26,7 @@ const App = () => {
             />
           )}
         />
+        <Route component={() => (<div>404 Not found </div>)} />
       </Switch>
       <h1>2</h1>
     </div>
@@ -33,7 +34,7 @@ const App = () => {
 };
 
 ReactDOM.render(
-  <BrowserRouter>
+  <BrowserRouter basename={process.env.PUBLIC_URL}>
     <App />
   </BrowserRouter>,
   document.getElementById("root")
