@@ -8,7 +8,9 @@ export default ({ Paltette }) => {
   const [format, setFormat] = useState("hex");
   const colorBoxes = Paltette.colors[level].map(color => {
     return (
-      <ColorBox background={color[format]} key={color.name} name={color.name} />
+      <ColorBox background={color[format]} key={color.name} name={color.name} 
+      showLink={true}
+     moreUrl={`/palette/${Paltette.id}/${color.id}`}/>
     );
   });
   const changeLevel = newLevel => {

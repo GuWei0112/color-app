@@ -5,6 +5,7 @@ import seedColor from "./components/seedColor";
 import { generatePalette } from "./components/colorHelper";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import PaletteList from "./components/PaletteList";
+import SingleColorPalette from "./components/SingleColorPalette";
 const App = () => {
   const findPaltette = id => {
     return seedColor.find(paltette => {
@@ -14,7 +15,13 @@ const App = () => {
   return (
     <div>
       <Switch>
-        <Route exact path="/" render={() => <PaletteList palettes={seedColor}/>} />
+        <Route
+          exact
+          path="/"
+          render={routeProps => (
+            <PaletteList palettes={seedColor} {...routeProps} />
+          )}
+        />
         <Route
           exact
           path="/palette/:id"
@@ -26,7 +33,18 @@ const App = () => {
             />
           )}
         />
-        <Route component={() => (<div>404 Not found </div>)} />
+        <Route
+          exact
+          path="/palette/:paletteId/:colorId"
+          render={routeProps => (
+            <SingleColorPalette 
+            colorId ={routeProps.match.params.colorId}
+            Paltette={generatePalette(
+              findPaltette(routeProps.match.params.paletteId)
+            )} />
+          )}
+        />
+        <Route component={() => <div>404 Not found </div>} />
       </Switch>
     </div>
   );
@@ -34,6 +52,7 @@ const App = () => {
 
 ReactDOM.render(
   <BrowserRouter basename={process.env.PUBLIC_URL}>
+    {/*github needs to add the baseName*/}
     <App />
   </BrowserRouter>,
   document.getElementById("root")
