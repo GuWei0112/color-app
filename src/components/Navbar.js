@@ -6,12 +6,12 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Snackbar from "@material-ui/core/Snackbar";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
-import {Link} from 'react-router-dom'
-export default ({ level, changeLevel, handleChange }) => {
+import { Link } from "react-router-dom";
+export default ({ level, changeLevel, handleChange, showAllColor }) => {
   const [format, setFormat] = useState("hex");
   const [open, setOpen] = useState(false);
   const handleValueChange = e => {
-    setOpen(true)
+    setOpen(true);
     setFormat(e.target.value);
     handleChange(e);
   };
@@ -20,18 +20,20 @@ export default ({ level, changeLevel, handleChange }) => {
       <div className="logo">
         <Link to="/">ReactColorPicker</Link>
       </div>
-      <div className="slider-container">
-        <span>Level: {level}</span>
-        <div className="Slider">
-          <Slider
-            defaultValue={level}
-            min={100}
-            max={900}
-            onAfterChange={newLevel => changeLevel(newLevel)}
-            step={100}
-          />
+      {showAllColor && (
+        <div className="slider-container">
+          <span>Level: {level}</span>
+          <div className="Slider">
+            <Slider
+              defaultValue={level}
+              min={100}
+              max={900}
+              onAfterChange={newLevel => changeLevel(newLevel)}
+              step={100}
+            />
+          </div>
         </div>
-      </div>
+      )}
       <div className="select-container">
         <Select value={format} onChange={e => handleValueChange(e)}>
           <MenuItem value="hex">Hex - #ffffff</MenuItem>
@@ -43,7 +45,9 @@ export default ({ level, changeLevel, handleChange }) => {
         anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
         open={open}
         autoHideDuration={3000}
-        message={<span id="message-id">Format Changed To {format.toUpperCase()}</span>}
+        message={
+          <span id="message-id">Format Changed To {format.toUpperCase()}</span>
+        }
         ContentProps={{ "aria-describedby": "message-id" }}
         onClose={() => setOpen(false)}
         action={[
