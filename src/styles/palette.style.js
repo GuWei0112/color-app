@@ -15,7 +15,7 @@ export default {
     position: "relative",
     cursor: "pointer",
     marginBottom: "-3.5px",
-    opacity: 1,
+    opacity: "1",
     backgroundColor: "black",
     "& a": {
       color: "white",
@@ -37,17 +37,5 @@ export default {
       border: "none",
       textDecoration: "none"
     }
-  },
-  PaletteFooter: {
-    backgroundColor: "white",
-    height: "5vh",
-    display: "lex",
-    justifyContent: "flex-end",
-    alignItems: "center",
-    fontWeight: "bold"
-  },
-  emoji: {
-    fontSize: "1.5rem",
-    margin: "0 1rem"
   }
 };
