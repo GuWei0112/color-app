@@ -6,6 +6,7 @@ import { generatePalette } from "./components/colorHelper";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import PaletteList from "./components/PaletteList";
 import SingleColorPalette from "./components/SingleColorPalette";
+import NewPaletteForm from "./components/NewPaletteForm";
 const App = () => {
   const findPaltette = id => {
     return seedColor.find(paltette => {
@@ -15,6 +16,7 @@ const App = () => {
   return (
     <div>
       <Switch>
+        <Route exact path="/palette/new" render={() => <NewPaletteForm />} />
         <Route
           exact
           path="/"
@@ -37,11 +39,12 @@ const App = () => {
           exact
           path="/palette/:paletteId/:colorId"
           render={routeProps => (
-            <SingleColorPalette 
-            colorId ={routeProps.match.params.colorId}
-            Paltette={generatePalette(
-              findPaltette(routeProps.match.params.paletteId)
-            )} />
+            <SingleColorPalette
+              colorId={routeProps.match.params.colorId}
+              Paltette={generatePalette(
+                findPaltette(routeProps.match.params.paletteId)
+              )}
+            />
           )}
         />
         <Route component={() => <div>404 Not found </div>} />
