@@ -5,21 +5,16 @@ import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import List from "@material-ui/core/List";
+import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
+import { ChromePicker } from "react-color";
+import DraggableColorBox from "./DraggableColorBox";
 
-const drawerWidth = 240;
-
+const drawerWidth = 400;
 const useStyles = makeStyles(theme => ({
   root: {
     display: "flex"
@@ -60,7 +55,8 @@ const useStyles = makeStyles(theme => ({
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3),
+    height: "calc(100vh - 10px)",
+    padding: theme.spacing(3),    
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
@@ -78,8 +74,9 @@ const useStyles = makeStyles(theme => ({
 
 export default () => {
   const classes = useStyles();
-  const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [currentColor, setCurrentColor] = useState("teal");
+  const [colors, setColors] = useState(["purple", "#e15764"]);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -88,6 +85,15 @@ export default () => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  const updateCurrnetColor = newColor => {
+    setCurrentColor(newColor.hex);
+  };
+
+  const addNewColor = () => {
+    setColors([...colors, currentColor]);
+  };
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -127,6 +133,27 @@ export default () => {
           </IconButton>
         </div>
         <Divider />
+        <Typography variant="h4">Design Your Palette</Typography>
+        <div>
+          <Button variant="contained" color="secondary">
+            Clear Palette
+          </Button>
+          <Button variant="contained" color="primary">
+            Random Color
+          </Button>
+        </div>
+        <ChromePicker
+          color={currentColor}
+          onChangeComplete={newColor => updateCurrnetColor(newColor)}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          style={{ backgroundColor: currentColor }}
+          onClick={() => addNewColor()}
+        >
+          Add Color
+        </Button>
       </Drawer>
       <main
         className={clsx(classes.content, {
@@ -134,6 +161,11 @@ export default () => {
         })}
       >
         <div className={classes.drawerHeader} />
+        <ul>
+          {colors.map(color => (
+            <DraggableColorBox color={color} />
+          ))}
+        </ul>
       </main>
     </div>
   );
