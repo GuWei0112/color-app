@@ -8,7 +8,7 @@ export default SortableContainer(({ colors, removeColor }) => {
       {colors.map((color, i) => (
         <DraggableColorBox
           index={i}
-          key={i}
+          key={color.name}
           color={color.color}
           name={color.name}
           handleClick={name => removeColor(name)}

@@ -1,5 +1,5 @@
-export default {  
-    PaletteFooter: {
+export default {
+  PaletteFooter: {
     backgroundColor: "white",
     height: "5vh",
     display: "flex",
@@ -11,4 +11,4 @@ export default {
     fontSize: "1.5rem",
     margin: "0 1rem"
   }
-}
+};

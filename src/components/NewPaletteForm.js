@@ -1,31 +1,35 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import clsx from "clsx";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import { ChromePicker } from "react-color";
 import DraggableColorList from "./DraggableColorList";
-import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { arrayMove } from "react-sortable-hoc";
+import PaletteFormNav from "./PaletteFormNav";
+import ColorPickerForm from "./ColorPickerForm";
+import sizes from "../styles/sizes";
 
 const drawerWidth = 400;
 const useStyles = makeStyles(theme => ({
   root: {
     display: "flex"
   },
+  hide: {
+    display: "none"
+  },
   appBar: {
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
-    })
+    }),
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    height: "64px"
   },
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
@@ -38,26 +42,25 @@ const useStyles = makeStyles(theme => ({
   menuButton: {
     marginRight: theme.spacing(2)
   },
-  hide: {
-    display: "none"
-  },
   drawer: {
     width: drawerWidth,
     flexShrink: 0
   },
   drawerPaper: {
-    width: drawerWidth
+    width: drawerWidth,
+    display: "flex"
   },
   drawerHeader: {
     display: "flex",
     alignItems: "center",
     padding: theme.spacing(0, 1),
     ...theme.mixins.toolbar,
-    justifyContent: "flex-end"
+    justifyContent: "flex-end",
+    width: "100%"
   },
   content: {
     flexGrow: 1,
-    height: "calc(100vh - 10px)",
+    height: "calc(300vh - 10px)",
     padding: theme.spacing(3),
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
@@ -71,10 +74,58 @@ const useStyles = makeStyles(theme => ({
       duration: theme.transitions.duration.enteringScreen
     }),
     marginLeft: 0
+  },
+  navBtns: {
+    marginRight: "1rem",
+    "& a": { textDecoration: "none" },
+    [sizes.down("xs")]: {
+      marginRight: "0.5rem"
+    }
+  },
+  navBtn: {
+    margin: "0 0.5rem",
+    textDecoration: "none",
+    [sizes.down("xs")]: {
+      margin: '0 0.2rem',
+      padding: "0.3rem"
+    }
+  },
+  container: {
+    width: "90%",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%"
+  },
+  buttons: {
+    width: "100%"
+  },
+  button: {
+    width: "50%"
+  },
+  picker: {
+    width: "100% !important",
+    marginTop: "2rem",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  colorInput: {
+    width: "100%",
+    height: "70px"
+  },
+  addColor: {
+    width: "100%",
+    padding: "1rem",
+    marginTop: "1rem",
+    fontSize: "1rem"
   }
 }));
 
 export default ({ savePalette, history, palettes }) => {
+  const maxColors = 20;
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [currentColor, setCurrentColor] = useState("teal");
@@ -106,11 +157,12 @@ export default ({ savePalette, history, palettes }) => {
     setNewColorName(e.target.value);
   };
 
-  const handleSavePalette = () => {
+  const handleSavePalette = emoji => {
     const newPalette = {
       paletteName: newPaletteName,
       id: newPaletteName.toLowerCase().replace(/ /g, "-"),
-      colors: colors
+      colors: colors,
+      emoji: emoji
     };
     savePalette(newPalette);
     history.push("/");
@@ -119,64 +171,35 @@ export default ({ savePalette, history, palettes }) => {
   const removeColor = name => {
     setColors(colors.filter(color => color.name !== name));
   };
+
   const onSortEnd = ({ oldIndex, newIndex }) => {
-    setColors(
-      arrayMove(colors, oldIndex, newIndex)
-    )
+    setColors(arrayMove(colors, oldIndex, newIndex));
   };
-  useEffect(() => {
-    ValidatorForm.addValidationRule("isColorNameUnique", value => {
-      colors.every(({ name }) => name.toLowerCase() !== value.toLowerCase());
+
+  const clearColors = () => {
+    setColors([]);
+  };
+
+  const addRandomColor = () => {
+    const allColors = palettes.map(p => p.colors).flat();
+    var rand = Math.floor(Math.random() * allColors.length);
+    const randomColor = allColors[rand];
+    setColors(prevColor => {
+      return [...prevColor, randomColor];
     });
-    ValidatorForm.addValidationRule("isColorUnique", value => {
-      colors.every(({ color }) => color !== currentColor);
-    });
-    ValidatorForm.addValidationRule("isPaletteNameUnique", value => {
-      return true;
-      // palettes.every(
-      //   ({ paletteName }) => paletteName.toLowerCase() !== value.toLowerCase()
-      // );
-    });
-  }, [colors, currentColor, palettes]);
+  };
 
   return (
     <div className={classes.root}>
-      <CssBaseline />
-      <AppBar
-        position="fixed"
-        color="default"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open
-        })}
-      >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            className={clsx(classes.menuButton, open && classes.hide)}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap>
-            Persistent drawer
-          </Typography>
-          <ValidatorForm onSubmit={() => handleSavePalette()}>
-            <TextValidator
-              value={newPaletteName}
-              label="Palette Name"
-              name="newPaletteName"
-              onChange={e => setnewPaletteName(e.target.value)}
-              validators={["required", "isPaletteNameUnique"]}
-              errorMessages={["Enter PaletteName", "Name already used"]}
-            />
-            <Button variant="contained" color="primary" type="submit">
-              Save Palette
-            </Button>
-          </ValidatorForm>
-        </Toolbar>
-      </AppBar>
+      <PaletteFormNav
+        palettes={palettes}
+        classes={classes}
+        open={open}
+        handleDrawerOpen={() => handleDrawerOpen()}
+        handleSavePalette={emoji => handleSavePalette(emoji)}
+        newPaletteName={newPaletteName}
+        setnewPaletteName={setnewPaletteName}
+      />
       <Drawer
         className={classes.drawer}
         variant="persistent"
@@ -192,40 +215,41 @@ export default ({ savePalette, history, palettes }) => {
           </IconButton>
         </div>
         <Divider />
-        <Typography variant="h4">Design Your Palette</Typography>
-        <div>
-          <Button variant="contained" color="secondary">
-            Clear Palette
-          </Button>
-          <Button variant="contained" color="primary">
-            Random Color
-          </Button>
-        </div>
-        <ChromePicker
-          color={currentColor}
-          onChangeComplete={newColor => updateCurrnetColor(newColor)}
-        />
-        <ValidatorForm onSubmit={() => addNewColor()}>
-          <TextValidator
-            value={newColorName}
-            onChange={e => handleChange(e)}
-            validators={["required", "isColorNameUnique", "isColorUnique"]}
-            errorMessages={[
-              "Enter a color name",
-              "ColorName must be valid",
-              "Color already used"
-            ]}
+        <div className={classes.container}>
+          <Typography variant="h4" gutterBottom>
+            Design Your Palette
+          </Typography>
+          <div className={classes.buttons}>
+            <Button
+              className={classes.button}
+              variant="contained"
+              color="secondary"
+              onClick={() => clearColors()}
+            >
+              Clear Palette
+            </Button>
+            <Button
+              className={classes.button}
+              variant="contained"
+              color="primary"
+              onClick={() => addRandomColor()}
+              disabled={colors.length >= maxColors}
+            >
+              Random Color
+            </Button>
+          </div>
+          <ColorPickerForm
+            currentColor={currentColor}
+            newColorName={newColorName}
+            maxColors={maxColors}
+            colors={colors}
+            updateCurrnetColor={updateCurrnetColor}
+            addNewColor={addNewColor}
+            handleChange={handleChange}
+            palettes={palettes}
+            classes={classes}
           />
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            style={{ backgroundColor: currentColor }}
-            onClick={() => addNewColor()}
-          >
-            Add Color
-          </Button>
-        </ValidatorForm>
+        </div>
       </Drawer>
       <main
         className={clsx(classes.content, {
@@ -239,6 +263,7 @@ export default ({ savePalette, history, palettes }) => {
             onSortEnd={onSortEnd}
             colors={colors}
             removeColor={name => removeColor(name)}
+            distance ={20}
           />
         </ul>
       </main>
