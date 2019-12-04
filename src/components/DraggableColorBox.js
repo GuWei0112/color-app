@@ -1,3 +1,4 @@
+import chroma from "chroma-js";
 import React from "react";
 import { SortableElement } from "react-sortable-hoc";
 import { withStyles } from "@material-ui/styles";
@@ -35,12 +36,15 @@ const styles = {
     left: "0px",
     bottom: "0px",
     padding: "10px",
-    color: "rgba(0,0,0,0.5)",
     letterSpacing: "1px",
     textTransform: "uppercase",
     fontSize: "12px",
     display: "flex",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    color: props =>
+      chroma(props.color).luminance() <= 0.08
+        ? "rgba(255,255,255,0.8)"
+        : "rgba(0,0,0,0.6)"
   },
   deleteIcon: {
     transition: "all 0.3s ease-in-out"
@@ -52,7 +56,7 @@ export default SortableElement(
     return (
       <div className={classes.root}>
         <div className={classes.boxContent} style={{ backgroundColor: color }}>
-          <span> {name}</span>
+          <span >{name}</span>
           <DeleteIcon
             className={classes.deleteIcon}
             onClick={() => {

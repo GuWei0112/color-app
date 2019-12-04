@@ -60,7 +60,7 @@ const useStyles = makeStyles(theme => ({
   },
   content: {
     flexGrow: 1,
-    height: "calc(300vh - 10px)",
+    height: "calc(100vh - 10px)",
     padding: theme.spacing(3),
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
@@ -86,7 +86,7 @@ const useStyles = makeStyles(theme => ({
     margin: "0 0.5rem",
     textDecoration: "none",
     [sizes.down("xs")]: {
-      margin: '0 0.2rem',
+      margin: "0 0.2rem",
       padding: "0.3rem"
     }
   },
@@ -182,8 +182,14 @@ export default ({ savePalette, history, palettes }) => {
 
   const addRandomColor = () => {
     const allColors = palettes.map(p => p.colors).flat();
-    var rand = Math.floor(Math.random() * allColors.length);
-    const randomColor = allColors[rand];
+    let rand ;
+    let randomColor;
+    let IsDuplicate = true;
+    while (IsDuplicate) {
+      rand = Math.floor(Math.random() * allColors.length);
+      const randomColor = allColors[rand];
+      IsDuplicate = colors.some(color => color.name === randomColor.name);
+    }
     setColors(prevColor => {
       return [...prevColor, randomColor];
     });
@@ -263,7 +269,7 @@ export default ({ savePalette, history, palettes }) => {
             onSortEnd={onSortEnd}
             colors={colors}
             removeColor={name => removeColor(name)}
-            distance ={20}
+            distance={20}
           />
         </ul>
       </main>

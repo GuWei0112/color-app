@@ -34,7 +34,7 @@ export default ({
         color={currentColor}
         onChangeComplete={newColor => updateCurrnetColor(newColor)}
       />
-      <ValidatorForm onSubmit={() => addNewColor()}>
+      <ValidatorForm onSubmit={() => addNewColor()} instantValidate={false}>
         <TextValidator
           value={newColorName}
           placeholder="Color Name"
